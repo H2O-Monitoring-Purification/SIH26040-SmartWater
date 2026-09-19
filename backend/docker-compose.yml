@@ -1,0 +1,38 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: sih26040-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: smartwater
+      POSTGRES_USER: smartwater_admin
+      POSTGRES_PASSWORD: smartwater_secret
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartwater_admin -d smartwater"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sih26040-redis
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
